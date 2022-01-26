@@ -2,6 +2,7 @@ var express = require("express");
 var cors = require("cors");
 var app = express();
 var bodyParser = require('body-parser');
+var url = require("url");
 
 app.use(bodyParser());
 app.use(cors())
@@ -66,8 +67,35 @@ app.get('/collection/:collectionName', (req, res, next) => {
         var result = Math.round((Math.random() * (max - min)) + min);
             res.json({ result: result });
         });
-        app.get("/", function(req, res) {
-            res.send("youjustsentaGETrequest,friend");
+        app.get("/Search/:collectionName/*", function(req, res) {
+
+            //Parse the URL
+            var urlObj = url.parse(req.url, true);
+
+            //Extract object containing queries from URL object.
+            var queries = urlObj.query;
+
+            //Get the pagination properties if they have been set. Will be  undefined if not set.
+            var searchTerm = queries['search'];
+
+            if (searchTerm) {
+               // console.log(searchTerm)
+               // let regex = '/^' + searchTerm + '/';
+
+                var regexx = new RegExp('^' + searchTerm );
+
+                req.collection.find({ $or: [
+                        { "subject": { $regex: regexx} },
+                        { "location": { $regex: regexx }}
+                    ]})
+                    .toArray((e, results) => {
+                        console.log(results)
+                        if (e) return next(e)
+                        res.send(results)
+                    })
+            }
+
+           // res.send("youjustsentaGETrequest,friend");
         });
         app.post('/collection/:collectionName', (req, res, next) => {
             req.collection.insert(req.body, (e, results) => {
@@ -137,6 +165,8 @@ app.get('/collection/:collectionName', (req, res, next) => {
             })
         })
     })
+
+
 
 
     const port = process.env.PORT || 3000;
