@@ -27,9 +27,41 @@ client.connect(err => {
 });
 */
 
+    app.get("/SearchID/:collectionName/*", function(req, res) {
+
+    //Parse the URL
+    var urlObj = url.parse(req.url, true);
+
+    //Extract object containing queries from URL object.
+    var queries = urlObj.query;
+
+    //Get the pagination properties if they have been set. Will be  undefined if not set.
+    var searchTerm = queries['search'];
+
+    if (searchTerm) {
+        console.log(searchTerm)
+        // let regex = '/^' + searchTerm + '/';
+
+Number.isInteger(searchTerm)
+
+        req.collection.find(
+                { "id":  parseInt(searchTerm)}
+            )
+            .toArray((e, results) => {
+                //console.log(results)
+                if (e) return next(e)
+                res.send(results)
+            })
+    }
+
+    // res.send("youjustsentaGETrequest,friend");
+});
+
+
+
 app.param('collectionName', (req, res, next, collectionName) => {
     req.collection = db.collection(collectionName)
-    console.log(req.collection)
+  //  console.log(req.collection)
     return next()
 })
 
@@ -67,6 +99,20 @@ app.get('/collection/:collectionName', (req, res, next) => {
         var result = Math.round((Math.random() * (max - min)) + min);
             res.json({ result: result });
         });
+
+     /*   app.post('/collection/:collectionName', (req, res, next) => {
+
+            req.collection.insert(req.body, (e, results) => {
+                if (e) {
+                    return next(e)
+                }
+
+                res.send(results.ops)
+
+            })
+        })
+*/
+
         app.get("/Search/:collectionName/*", function(req, res) {
 
             //Parse the URL
@@ -79,32 +125,55 @@ app.get('/collection/:collectionName', (req, res, next) => {
             var searchTerm = queries['search'];
 
             if (searchTerm) {
-               // console.log(searchTerm)
+                console.log(searchTerm)
                // let regex = '/^' + searchTerm + '/';
 
-                var regexx = new RegExp('^' + searchTerm );
+              if (!isNaN(searchTerm)){
+                    console.log("number is integer")
+                  req.collection.find(
+                      { "id":  parseInt(searchTerm)}
+                  )
+                      .toArray((e, results) => {
+                          //console.log(results)
+                          if (e) return next(e)
+                          res.send(results)
+                      })
+              } else {
+                  console.log("number is NOT integer")
+                  var regexx = new RegExp('^' + searchTerm );
 
-                req.collection.find({ $or: [
-                        { "subject": { $regex: regexx} },
-                        { "location": { $regex: regexx }}
-                    ]})
-                    .toArray((e, results) => {
-                        console.log(results)
-                        if (e) return next(e)
-                        res.send(results)
-                    })
+                  req.collection.find({ $or: [
+                          { "subject": { $regex: regexx}},
+                          { "location": { $regex: regexx }}
+                      ]})
+                      .toArray((e, results) => {
+                          //console.log(results)
+                          if (e) return next(e)
+                          res.send(results)
+                      })
+              }
+
+
+
             }
 
            // res.send("youjustsentaGETrequest,friend");
         });
         app.post('/collection/:collectionName', (req, res, next) => {
+          //  console.log(req.body.test)
+
             req.collection.insert(req.body, (e, results) => {
                 if (e) {
                     return next(e)
                 }
-                res.send(results.ops)
+
+                res.send(results)
             })
     })
+
+
+
+
 
     app.post("/", function(req, res) {
         res.send("aPOSTrequest?nice");
@@ -140,6 +209,28 @@ app.get('/collection/:collectionName', (req, res, next) => {
         }, (e, result) => {
            // console.log(result.matchedCount)
             if (e) {
+                return next(e)
+            }
+            res.send((result.matchedCount === 1) ? {
+                msg: 'success'
+            } : {
+                msg: 'error'
+            })
+        })
+    })
+        app.put('/update/:collectionName/:id', (req, res, next) => {
+        req.collection.update({
+                id  : parseInt(req.params.id)
+        }, {
+            $set: req.body
+        }, {
+            safe: true,
+            multi: false
+        }, (e, result) => {
+            console.log(result)
+            // console.log(result.matchedCount)
+            if (e) {
+
                 return next(e)
             }
             res.send((result.matchedCount === 1) ? {
