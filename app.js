@@ -15,6 +15,37 @@ MongoClient.connect('mongodb+srv://Gurpreet122p:Qwerty122p@cluster0.v6tbm.mongod
 })
 
 
+
+
+var path = require("path");
+var fs = require("fs");
+
+app.use(express.json())
+
+app.use(function (req, res, next) {
+    // Uses path.join to find the path where the file should be
+    var filePath = path.join(__dirname, "assets", req.url);
+    // Built-in fs.stat gets info about a file
+    fs.stat(filePath, function (err, fileInfo) {
+
+        if (err) {
+            if (err.code === 'ENOENT') {
+                res.statusCode = 404;
+                res.end('File not found')
+            }
+
+            next();
+            return;
+        }
+        if (fileInfo.isFile()) res.sendFile(filePath);
+        else next();
+    });
+});
+
+
+
+
+
 /*
 const { MongoClient } = require('mongodb');
 const uri = "mongodb+srv://Gurpreet122p:<Qwerty122p>@cluster0.v6tbm.mongodb.net/CW2?retryWrites=true&w=majority";
