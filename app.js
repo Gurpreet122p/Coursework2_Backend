@@ -3,6 +3,8 @@ var cors = require("cors");
 var app = express();
 var bodyParser = require('body-parser');
 var url = require("url");
+var path = require("path");
+var fs = require("fs");
 
 app.use(bodyParser());
 app.use(cors())
@@ -15,10 +17,25 @@ MongoClient.connect('mongodb+srv://Gurpreet122p:Qwerty122p@cluster0.v6tbm.mongod
 })
 
 
+app.use(
+    function
+        (
+            req, res, next
+        )
+    {
+// allow different IP address
+        res.header(
+            "Access-Control-Allow-Origin"
+            ,
+            "*"
+        );
+// allow different header fields
+        res.header(
+            "Access-Control-Allow-Headers"
+            ,
+            "*"
+        ); next(); });
 
-
-var path = require("path");
-var fs = require("fs");
 
 app.use(express.json())
 
