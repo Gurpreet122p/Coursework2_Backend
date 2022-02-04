@@ -141,7 +141,7 @@ app.use(cors())
             res.send(result)
         })
     })
-
+/*
         app.put('/collection/:collectionName/:id', (req, res, next) => {
             console.log("Performed a PUT Request")
             req.collection.update({
@@ -163,6 +163,7 @@ app.use(cors())
                 })
             })
         })
+      */
         app.put('/update/:collectionName/:id', (req, res, next) => {
             console.log("Performed a PUT Request")
             req.collection.update({
