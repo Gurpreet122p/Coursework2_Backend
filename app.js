@@ -121,8 +121,13 @@ app.use(cors())
                 res.send(results)
             })
     })
-
-
+    
+    app.post("/", function(req, res) {
+        res.send("aPOSTrequest?nice");
+    });
+    app.put("/", function(req, res) {
+        res.send("idon’tseealotofPUTrequestsanymore");
+    });
 
     const ObjectID = require('mongodb').ObjectID;
     app.get('/collection/:collectionName/:id', (req, res, next) => {
@@ -136,7 +141,7 @@ app.use(cors())
             res.send(result)
         })
     })
-        
+
         app.put('/collection/:collectionName/:id', (req, res, next) => {
             console.log("Performed a PUT Request")
             req.collection.update({
