@@ -62,9 +62,6 @@ app.use(cors())
                 res.send(results)
             })
             })
-    app.post('/collection/:collectionName', (req, res, next) => {
-   next()
-    })
 
         app.get("/Search/:collectionName/*", function(req, res) {
             console.log("Performed a search query")
