@@ -37,8 +37,8 @@ app.use(
         ); next(); });
 
 
-app.use(express.json())
-
+//app.use(express.json())
+/*
 app.use(function (req, res, next) {
     // Uses path.join to find the path where the file should be
     var filePath = path.join(__dirname, "assets", req.url);
@@ -59,7 +59,19 @@ app.use(function (req, res, next) {
     });
 });
 
+*/
 
+
+// Sets up the path where your static files are
+var publicPath = path.resolve(__dirname,  "assets");
+// Sends static files from the publicPath directory
+app.use(express.static(publicPath));
+app.use(function(request, response) {
+    response.writeHead(200, {
+        "Content-Type": "text/plain"
+    });
+    response.end("Looks like you didn’t find a static file.");
+});
 
 
 
