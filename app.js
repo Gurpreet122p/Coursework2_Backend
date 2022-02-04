@@ -12,7 +12,7 @@ app.use(cors())
     let db;
     MongoClient.connect('mongodb+srv://Gurpreet122p:Qwerty122p@cluster0.v6tbm.mongodb.net/CW2?retryWrites=true&w=majority', (err, client) => {
         db = client.db('CW2')
-    
+
     })
 
     //Allow CORS
@@ -34,7 +34,7 @@ app.use(cors())
                 ,
                 "*"
             ); next(); });
-        
+
             // the 'logger' middleware
             app.use(function(req, res, next) {
                 console.log("Request URL: " + req.url);
@@ -42,15 +42,15 @@ app.use(cors())
                 console.log("Request date: " + new Date());
                 next();
             });
-        
-        
+
+
         app.param('collectionName', (req, res, next, collectionName) => {
             req.collection = db.collection(collectionName)
           //  console.log(req.collection)
             return next()
         })
-        
-        
+
+
         app.get('/collection/:collectionName', (req, res, next) => {
             req.collection.find({}, {
                // limit: 15,
@@ -106,8 +106,10 @@ app.use(cors())
 
 
             }
-            
+
         });
+
+
         app.post('/collection/:collectionName', (req, res, next) => {
           //  console.log(req.body.test)
             console.log("Received POST Request")
@@ -119,6 +121,7 @@ app.use(cors())
                 res.send(results)
             })
     })
+
 
 
     const ObjectID = require('mongodb').ObjectID;
@@ -133,9 +136,30 @@ app.use(cors())
             res.send(result)
         })
     })
-
+        
+        app.put('/collection/:collectionName/:id', (req, res, next) => {
+            console.log("Performed a PUT Request")
+            req.collection.update({
+                _id: new ObjectID(req.params.id)
+            }, {
+                $set: req.body
+            }, {
+                safe: true,
+                multi: false
+            }, (e, result) => {
+                // console.log(result.matchedCount)
+                if (e) {
+                    return next(e)
+                }
+                res.send((result.matchedCount === 1) ? {
+                    msg: 'success'
+                } : {
+                    msg: 'error'
+                })
+            })
+        })
         app.put('/update/:collectionName/:id', (req, res, next) => {
-            console.log("Performed an UPDATE query")
+            console.log("Performed a PUT Request")
             req.collection.update({
                 id  : parseInt(req.params.id)
         }, {
