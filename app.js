@@ -4,17 +4,16 @@ var app = express();
 var bodyParser = require('body-parser');
 var url = require("url");
 var path = require("path");
-var fs = require("fs");
 
 app.use(bodyParser());
 app.use(cors())
-const MongoClient = require('mongodb').MongoClient;
 
-let db;
-MongoClient.connect('mongodb+srv://Gurpreet122p:Qwerty122p@cluster0.v6tbm.mongodb.net/CW2?retryWrites=true&w=majority', (err, client) => {
-    db = client.db('CW2')
-
-})
+    const MongoClient = require('mongodb').MongoClient;
+    let db;
+    MongoClient.connect('mongodb+srv://Gurpreet122p:Qwerty122p@cluster0.v6tbm.mongodb.net/CW2?retryWrites=true&w=majority', (err, client) => {
+        db = client.db('CW2')
+    
+    })
 
     //Allow CORS
     app.use(
@@ -35,150 +34,34 @@ MongoClient.connect('mongodb+srv://Gurpreet122p:Qwerty122p@cluster0.v6tbm.mongod
                 ,
                 "*"
             ); next(); });
-
-    // the 'logger' middleware
-    app.use(function(req, res, next) {
-        console.log("Request URL: " + req.url);
-        console.log("Request IP Address: " +  req.ip);
-        console.log("Request date: " + new Date());
-        next();
-    });
-
-
-
-
-
-
-//app.use(express.json())
-/*
-app.use(function (req, res, next) {
-    // Uses path.join to find the path where the file should be
-    var filePath = path.join(__dirname, "assets", req.url);
-    // Built-in fs.stat gets info about a file
-    fs.stat(filePath, function (err, fileInfo) {
-
-        if (err) {
-            if (err.code === 'ENOENT') {
-                res.statusCode = 404;
-                res.end('File not found')
-            }
-
-            next();
-            return;
-        }
-        if (fileInfo.isFile()) res.sendFile(filePath);
-        else next();
-    });
-});
-
-*/
-
-
-
-
-/*
-const { MongoClient } = require('mongodb');
-const uri = "mongodb+srv://Gurpreet122p:<Qwerty122p>@cluster0.v6tbm.mongodb.net/CW2?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-client.connect(err => {
-    const collection = client.db("CW2").collection("Lessons");
-    // perform actions on the collection object
-    console.log(collection)
-    client.close();
-});
-*/
-/* OLD Search
-    app.get("/SearchID/:collectionName/*", function(req, res) {
-    console.log("Performed a search query")
-    //Parse the URL
-    var urlObj = url.parse(req.url, true);
-
-    //Extract object containing queries from URL object.
-    var queries = urlObj.query;
-
-    //Get the pagination properties if they have been set. Will be  undefined if not set.
-    var searchTerm = queries['search'];
-
-    if (searchTerm) {
-        console.log(searchTerm)
-        // let regex = '/^' + searchTerm + '/';
-
-        Number.isInteger(searchTerm)
-
-        req.collection.find(
-                { "id":  parseInt(searchTerm)}
-            )
-            .toArray((e, results) => {
-                //console.log(results)
+        
+            // the 'logger' middleware
+            app.use(function(req, res, next) {
+                console.log("Request URL: " + req.url);
+                console.log("Request IP Address: " +  req.ip);
+                console.log("Request date: " + new Date());
+                next();
+            });
+        
+        
+        app.param('collectionName', (req, res, next, collectionName) => {
+            req.collection = db.collection(collectionName)
+          //  console.log(req.collection)
+            return next()
+        })
+        
+        
+        app.get('/collection/:collectionName', (req, res, next) => {
+            req.collection.find({}, {
+               // limit: 15,
+                sort: [
+                    ['price', -1]
+                ]
+            }).toArray((e, results) => {
                 if (e) return next(e)
                 res.send(results)
             })
-    }
-
-    // res.send("youjustsentaGETrequest,friend");
-});
-
-
-*/
-
-app.param('collectionName', (req, res, next, collectionName) => {
-    req.collection = db.collection(collectionName)
-  //  console.log(req.collection)
-    return next()
-})
-
-app.get('/collection/:collectionName', (req, res, next) => {
-    req.collection.find({}, {
-        limit: 15,
-        sort: [
-            ['price', -1]
-        ]
-    }).toArray((e, results) => {
-        if (e) return next(e)
-        res.send(results)
-    })
-})
-/*
-app.get('/collection/:collectionName', (req, res, next) => {
-    req.collection.find({}).toArray((e, results) => {
-        if (e)  {
-            return next(e)
-        }
-        res.send(results)
-    })
-});
-*/
-/*
-    app.get("/random/:min/:max", function(req, res) { // take two parameters
-        var min = parseInt(req.params.min);
-        var max = parseInt(req.params.max);
-        // return an error if either is not a number
-        if (isNaN(min) || isNaN(max)) {
-            res.status(400);
-            res.json({ error: "Bad request." });
-            return;
-        }
-        // calculate and send back the result
-        var result = Math.round((Math.random() * (max - min)) + min);
-            res.json({ result: result });
-        });
-
-    */
-
-
-
-     /*   app.post('/collection/:collectionName', (req, res, next) => {
-
-            req.collection.insert(req.body, (e, results) => {
-                if (e) {
-                    return next(e)
-                }
-
-                res.send(results.ops)
-
-            })
         })
-*/
 
         app.get("/Search/:collectionName/*", function(req, res) {
             console.log("Performed a search query")
@@ -196,7 +79,7 @@ app.get('/collection/:collectionName', (req, res, next) => {
                // let regex = '/^' + searchTerm + '/';
 
               if (!isNaN(searchTerm)){
-                    console.log("number is integer")
+
                   req.collection.find(
                       { "id":  parseInt(searchTerm)}
                   )
@@ -223,18 +106,16 @@ app.get('/collection/:collectionName', (req, res, next) => {
 
 
             }
-
-           // res.send("youjustsentaGETrequest,friend");
+            
         });
         app.post('/collection/:collectionName', (req, res, next) => {
           //  console.log(req.body.test)
-            console.log("Received POST for all collection")
+            console.log("Received POST Request")
 
             req.collection.insert(req.body, (e, results) => {
                 if (e) {
                     return next(e)
                 }
-
                 res.send(results)
             })
     })
@@ -253,28 +134,6 @@ app.get('/collection/:collectionName', (req, res, next) => {
         })
     })
 
-
-    app.put('/collection/:collectionName/:id', (req, res, next) => {
-        console.log("Performed a search ID query")
-        req.collection.update({
-            _id: new ObjectID(req.params.id)
-        }, {
-            $set: req.body
-        }, {
-            safe: true,
-            multi: false
-        }, (e, result) => {
-           // console.log(result.matchedCount)
-            if (e) {
-                return next(e)
-            }
-            res.send((result.matchedCount === 1) ? {
-                msg: 'success'
-            } : {
-                msg: 'error'
-            })
-        })
-    })
         app.put('/update/:collectionName/:id', (req, res, next) => {
             console.log("Performed an UPDATE query")
             req.collection.update({
@@ -298,31 +157,13 @@ app.get('/collection/:collectionName', (req, res, next) => {
             })
         })
     })
-/* NOT Needed 
-    app.delete('/collection/:collectionName/:id', (req, res, next) => {
-        console.log("Performed a DELETE query")
-        req.collection.deleteOne({
-            _id: ObjectID(req.params.id)
-        }, (e, result) => {
-            console.log(result)
-            if (e) {
-                return next(e)
-            }
-            res.send((result.deletedCount === 1) ? {
-                msg: 'success'
-            } : {
-                msg: 'error'
-            })
-        })
-    })
-*/
 
         // Sets up the path where your static files are
         var publicPath = path.resolve(__dirname,  "assets");
         // Sends static files from the publicPath directory
         app.use(express.static(publicPath));
         app.use(function(request, response) {
-            response.writeHead(200, {
+            response.writeHead(404, {
                 "Content-Type": "text/plain"
             });
             response.end("Picture Not Found.");
@@ -336,8 +177,3 @@ app.get('/collection/:collectionName', (req, res, next) => {
         console.log("App started");
     })
 
-    /*
-    app.listen(3000, function() {
-        console.log("Random number API started on port 3000");
-        });
-*/
