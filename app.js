@@ -40,6 +40,7 @@ MongoClient.connect('mongodb+srv://Gurpreet122p:Qwerty122p@cluster0.v6tbm.mongod
     app.use(function(req, res, next) {
         console.log("Request IP: " + req.url);
         console.log("Request date: " + new Date());
+        next();
     });
 
 
@@ -338,7 +339,7 @@ app.get('/collection/:collectionName', (req, res, next) => {
     const port = process.env.PORT || 3000;
     app.listen(port,function (){
 
-        console.log("App started");
+        console.log("App started on port 3000");
     })
 
     /*
