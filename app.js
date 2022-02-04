@@ -87,7 +87,7 @@ client.connect(err => {
     client.close();
 });
 */
-
+/* OLD Search
     app.get("/SearchID/:collectionName/*", function(req, res) {
     console.log("Performed a search query")
     //Parse the URL
@@ -103,7 +103,7 @@ client.connect(err => {
         console.log(searchTerm)
         // let regex = '/^' + searchTerm + '/';
 
-Number.isInteger(searchTerm)
+        Number.isInteger(searchTerm)
 
         req.collection.find(
                 { "id":  parseInt(searchTerm)}
@@ -119,6 +119,7 @@ Number.isInteger(searchTerm)
 });
 
 
+*/
 
 app.param('collectionName', (req, res, next, collectionName) => {
     req.collection = db.collection(collectionName)
@@ -180,7 +181,7 @@ app.get('/collection/:collectionName', (req, res, next) => {
 */
 
         app.get("/Search/:collectionName/*", function(req, res) {
-
+            console.log("Performed a search query")
             //Parse the URL
             var urlObj = url.parse(req.url, true);
 
@@ -227,6 +228,7 @@ app.get('/collection/:collectionName', (req, res, next) => {
         });
         app.post('/collection/:collectionName', (req, res, next) => {
           //  console.log(req.body.test)
+            console.log("Received POST for all collection")
 
             req.collection.insert(req.body, (e, results) => {
                 if (e) {
@@ -238,21 +240,9 @@ app.get('/collection/:collectionName', (req, res, next) => {
     })
 
 
-
-
-
-    app.post("/", function(req, res) {
-        res.send("aPOSTrequest?nice");
-    });
-    app.put("/", function(req, res) {
-        res.send("idon’tseealotofPUTrequestsanymore");
-    });
-    app.delete("/", function(req, res) {
-        res.send("ohmy,aDELETE??");
-    });
-
     const ObjectID = require('mongodb').ObjectID;
     app.get('/collection/:collectionName/:id', (req, res, next) => {
+        console.log("Performed a search query")
         req.collection.findOne({
             _id: new ObjectID(req.params.id)
         }, (e, result) => {
@@ -265,6 +255,7 @@ app.get('/collection/:collectionName', (req, res, next) => {
 
 
     app.put('/collection/:collectionName/:id', (req, res, next) => {
+        console.log("Performed a search ID query")
         req.collection.update({
             _id: new ObjectID(req.params.id)
         }, {
@@ -285,7 +276,8 @@ app.get('/collection/:collectionName', (req, res, next) => {
         })
     })
         app.put('/update/:collectionName/:id', (req, res, next) => {
-        req.collection.update({
+            console.log("Performed an UPDATE query")
+            req.collection.update({
                 id  : parseInt(req.params.id)
         }, {
             $set: req.body
@@ -306,8 +298,9 @@ app.get('/collection/:collectionName', (req, res, next) => {
             })
         })
     })
-
+/* NOT Needed 
     app.delete('/collection/:collectionName/:id', (req, res, next) => {
+        console.log("Performed a DELETE query")
         req.collection.deleteOne({
             _id: ObjectID(req.params.id)
         }, (e, result) => {
@@ -322,7 +315,7 @@ app.get('/collection/:collectionName', (req, res, next) => {
             })
         })
     })
-
+*/
 
         // Sets up the path where your static files are
         var publicPath = path.resolve(__dirname,  "assets");
@@ -342,3 +335,9 @@ app.get('/collection/:collectionName', (req, res, next) => {
 
         console.log("App started");
     })
+
+    /*
+    app.listen(3000, function() {
+        console.log("Random number API started on port 3000");
+        });
+*/
