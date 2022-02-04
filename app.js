@@ -16,25 +16,35 @@ MongoClient.connect('mongodb+srv://Gurpreet122p:Qwerty122p@cluster0.v6tbm.mongod
 
 })
 
+    //Allow CORS
+    app.use(
+        function
+            (
+                req, res, next
+            )
+        {
+    // allow different IP address
+            res.header(
+                "Access-Control-Allow-Origin"
+                ,
+                "*"
+            );
+    // allow different header fields
+            res.header(
+                "Access-Control-Allow-Headers"
+                ,
+                "*"
+            ); next(); });
 
-app.use(
-    function
-        (
-            req, res, next
-        )
-    {
-// allow different IP address
-        res.header(
-            "Access-Control-Allow-Origin"
-            ,
-            "*"
-        );
-// allow different header fields
-        res.header(
-            "Access-Control-Allow-Headers"
-            ,
-            "*"
-        ); next(); });
+    // the 'logger' middleware
+    app.use(function(req, res, next) {
+        console.log("Request IP: " + req.url);
+        console.log("Request date: " + new Date());
+    });
+
+
+
+
 
 
 //app.use(express.json())
@@ -77,7 +87,7 @@ client.connect(err => {
 */
 
     app.get("/SearchID/:collectionName/*", function(req, res) {
-
+    console.log("Performed a search query")
     //Parse the URL
     var urlObj = url.parse(req.url, true);
 
@@ -135,6 +145,7 @@ app.get('/collection/:collectionName', (req, res, next) => {
     })
 });
 */
+/*
     app.get("/random/:min/:max", function(req, res) { // take two parameters
         var min = parseInt(req.params.min);
         var max = parseInt(req.params.max);
@@ -148,6 +159,10 @@ app.get('/collection/:collectionName', (req, res, next) => {
         var result = Math.round((Math.random() * (max - min)) + min);
             res.json({ result: result });
         });
+
+    */
+
+
 
      /*   app.post('/collection/:collectionName', (req, res, next) => {
 
@@ -315,13 +330,16 @@ app.get('/collection/:collectionName', (req, res, next) => {
             response.writeHead(200, {
                 "Content-Type": "text/plain"
             });
-            response.end("Looks like you didn’t find a static file.");
+            response.end("Picture Not Found.");
         });
 
 
 
     const port = process.env.PORT || 3000;
-    app.listen(port)
+    app.listen(port,function (){
+
+        console.log("App started");
+    })
 
     /*
     app.listen(3000, function() {
