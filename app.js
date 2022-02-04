@@ -38,7 +38,8 @@ MongoClient.connect('mongodb+srv://Gurpreet122p:Qwerty122p@cluster0.v6tbm.mongod
 
     // the 'logger' middleware
     app.use(function(req, res, next) {
-        console.log("Request IP: " + req.url);
+        console.log("Request URL: " + req.url);
+        console.log("Request IP Address: " +  req.ip);
         console.log("Request date: " + new Date());
         next();
     });
@@ -339,11 +340,5 @@ app.get('/collection/:collectionName', (req, res, next) => {
     const port = process.env.PORT || 3000;
     app.listen(port,function (){
 
-        console.log("App started on port 3000");
+        console.log("App started");
     })
-
-    /*
-    app.listen(3000, function() {
-        console.log("Random number API started on port 3000");
-        });
-*/
