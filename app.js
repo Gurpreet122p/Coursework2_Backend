@@ -118,17 +118,17 @@ app.use(cors())
                 if (e) {
                     return next(e)
                 }
-                res.send(results)
+                //res.send(results)
             })
     })
-    
+/*
     app.post("/", function(req, res) {
         res.send("aPOSTrequest?nice");
     });
     app.put("/", function(req, res) {
         res.send("idon’tseealotofPUTrequestsanymore");
     });
-
+*/
     const ObjectID = require('mongodb').ObjectID;
     app.get('/collection/:collectionName/:id', (req, res, next) => {
         console.log("Performed a search query")
