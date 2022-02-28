@@ -1,0 +1,13 @@
+{
+    "name": "LessonBookingSystem",
+    "short_name": "BookingSystem",
+    "description": "Book different activites",
+    "icons": [{
+        "src": "assets/icon.png",
+        "sizes": "512x512",
+        "type": "image/png"
+    }],
+    "start_url": "/",
+    "display": "fullscreen",
+    "background_color": "#B12A34"
+}
