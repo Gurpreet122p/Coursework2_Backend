@@ -10,7 +10,7 @@ app.use(cors())
 
     const MongoClient = require('mongodb').MongoClient;
     let db;
-    MongoClient.connect('mongodb+srv://Gurpreet122p:Qwerty122p@cluster0.v6tbm.mongodb.net/CW2?retryWrites=true&w=majority', (err, client) => {
+    MongoClient.connect('mongodb+srv://username:password@cluster0.v6tbm.mongodb.net/CW2?retryWrites=true&w=majority', (err, client) => {
         db = client.db('CW2')
 
     })
